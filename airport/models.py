@@ -5,7 +5,7 @@ from django.db.models import Q, F
 
 
 class AirplaneType(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -72,7 +72,7 @@ class Route(models.Model):
                 name="unique_route_source_destination",
             ),
             models.CheckConstraint(
-                check=~Q(source=F("destination")),
+                condition=~Q(source=F("destination")),
                 name="prevent_same_airport_route",
             ),
         ]
