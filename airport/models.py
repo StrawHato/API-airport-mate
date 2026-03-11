@@ -62,7 +62,7 @@ class Route(models.Model):
     distance = models.IntegerField()
 
     def __str__(self):
-        return f"{self.source} -> {self.destination}"
+        return f"You are flying from {self.source} to {self.destination}"
 
     class Meta:
         constraints = [
@@ -75,3 +75,24 @@ class Route(models.Model):
                 name="prevent_same_airport_route",
             ),
         ]
+
+
+class Flight(models.Model):
+    route = models.ForeignKey(
+        Route,
+        on_delete=models.CASCADE,
+        related_name="flights"
+    )
+    airplane = models.ForeignKey(
+        Airplane,
+        on_delete=models.CASCADE,
+        related_name="flights"
+    )
+    departure_time = models.DateTimeField()
+    arrival_time = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.route} on {self.airplane}"
+
+    class Meta:
+        ordering = ["departure_time"]
