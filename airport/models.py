@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.db import models
 from django.db.models import Q, F
 
@@ -96,3 +96,18 @@ class Flight(models.Model):
 
     class Meta:
         ordering = ["departure_time"]
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
+
+    def __str__(self):
+        return f"{self.created_at}"
+
+    class Meta:
+        ordering = ["-created_at"]
