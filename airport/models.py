@@ -18,6 +18,10 @@ class Airplane(models.Model):
         related_name="airplanes"
     )
 
+    @property
+    def capacity(self):
+        return self.rows * self.seats_in_row
+
     def __str__(self):
         return self.name
 
@@ -32,4 +36,3 @@ class Crew(models.Model):
 
     def __str__(self):
         return self.full_name
-    
