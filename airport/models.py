@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q, F
 
 
 class AirplaneType(models.Model):
@@ -44,3 +46,32 @@ class Airport(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Route(models.Model):
+    source = models.ForeignKey(
+        Airport,
+        on_delete=models.CASCADE,
+        related_name="routes_from"
+    )
+    destination = models.ForeignKey(
+        Airport,
+        on_delete=models.CASCADE,
+        related_name="routes_to"
+    )
+    distance = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.source} -> {self.destination}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["source", "destination"],
+                name="unique_route_source_destination",
+            ),
+            models.CheckConstraint(
+                check=~Q(source=F("destination")),
+                name="prevent_same_airport_route",
+            ),
+        ]
