@@ -46,7 +46,7 @@ class Airport(models.Model):
     closest_big_city = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.closest_big_city})"
 
 
 class Route(models.Model):
@@ -63,7 +63,7 @@ class Route(models.Model):
     distance = models.IntegerField()
 
     def __str__(self):
-        return f"You are flying from {self.source.name} to {self.destination.name}"
+        return f"From {self.source} to {self.destination}"
 
     class Meta:
         constraints = [
