@@ -97,6 +97,7 @@
     "fields": {
       "route": 1,
       "airplane": 1,
+      "crew": [1, 2],
       "departure_time": "2026-04-01T08:00:00Z",
       "arrival_time": "2026-04-01T11:00:00Z"
     }
@@ -107,6 +108,7 @@
     "fields": {
       "route": 2,
       "airplane": 2,
+      "crew": [1],
       "departure_time": "2026-04-02T12:00:00Z",
       "arrival_time": "2026-04-02T13:00:00Z"
     }

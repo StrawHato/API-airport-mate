@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q, F
+from django.db.models import Q, F, ManyToManyField
 
 
 class AirplaneType(models.Model):
@@ -89,6 +89,7 @@ class Flight(models.Model):
         on_delete=models.CASCADE,
         related_name="flights"
     )
+    crew = ManyToManyField(Crew, related_name="flights")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
 
