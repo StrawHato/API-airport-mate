@@ -51,18 +51,27 @@ class AirportSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    source = serializers.CharField(
-        source="source.name",
-        read_only=True,
-    )
-    destination = serializers.CharField(
-        source="destination.name",
-        read_only=True,
-    )
+    def validate(self, attrs):
+        if attrs["source"] == attrs["destination"]:
+            raise ValidationError(
+                "Source and destination cannot be the same airport"
+            )
+        return attrs
 
     class Meta:
         model = Route
         fields = ("id", "source", "destination", "distance")
+
+
+class RouteListSerializer(RouteSerializer):
+    source = serializers.CharField(
+        source="source.name",
+        read_only=False,
+    )
+    destination = serializers.CharField(
+        source="destination.name",
+        read_only=False,
+    )
 
 
 class FlightSerializer(serializers.ModelSerializer):
