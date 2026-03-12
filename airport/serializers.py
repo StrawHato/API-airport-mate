@@ -38,6 +38,12 @@ class AirplaneSerializer(serializers.ModelSerializer):
         )
 
 
+class AirplaneCompressedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Airplane
+        fields = ("name", "rows", "seats_in_row", "capacity")
+
+
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
@@ -77,7 +83,23 @@ class RouteListSerializer(RouteSerializer):
 class FlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flight
-        fields = ("id", "route", "airplane", "departure_time", "arrival_time")
+        fields = ("id","route", "airplane", "crew", "departure_time", "arrival_time")
+
+
+class FlightListSerializer(FlightSerializer):
+    route = RouteListSerializer(many=False, read_only=True)
+    airplane = AirplaneCompressedSerializer(many=False, read_only=True)
+    crew = serializers.SlugRelatedField(
+        read_only=True,
+        many=True,
+        slug_field="full_name",
+    )
+
+
+class FlightDetailSerializer(FlightSerializer):
+    route = RouteListSerializer(many=False, read_only=True)
+    airplane = AirplaneSerializer(many=False, read_only=True)
+    crew = CrewSerializer(many=True, read_only=True)
 
 
 class TicketSerializer(serializers.ModelSerializer):
