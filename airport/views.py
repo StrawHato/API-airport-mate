@@ -1,4 +1,7 @@
-from rest_framework import viewsets, pagination
+from rest_framework import viewsets, pagination, status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
 
 from airport.models import (
     AirplaneType,
@@ -22,7 +25,7 @@ from airport.serializers import (
     FlightListSerializer,
     FlightDetailSerializer,
     OrderSerializer,
-    OrderListSerializer
+    OrderListSerializer, ImageUploadSerializer
 )
 
 
@@ -48,6 +51,20 @@ class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.all()
     serializer_class = AirportSerializer
     pagination_class = None
+
+    @action(
+        detail=True,
+        methods=["POST"],
+        url_path="upload-image",
+        permission_classes=(IsAdminUser,),
+    )
+    def image_upload(self, request, pk=None):
+        """Endpoint for uploading image to specific airport"""
+        airport = self.get_object()
+        serializer = ImageUploadSerializer(airport, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RouteViewSet(viewsets.ModelViewSet):

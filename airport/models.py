@@ -54,7 +54,7 @@ class Country(models.Model):
 
 def image_upload_path(instance, filename):
     _, extension = os.path.splitext(filename)
-    filename = f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
+    filename = f"{slugify(instance.name)}-{uuid.uuid4()}{extension}"
 
     return os.path.join("uploads/airports/", filename)
 
@@ -63,7 +63,7 @@ class Airport(models.Model):
     name = models.CharField(max_length=100)
     closest_big_city = models.CharField(max_length=100)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="airports")
-    image = models.ImageField(upload_to="airport-mate/images/", null=True, blank=True)
+    image = models.ImageField(upload_to=image_upload_path, null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} ({self.closest_big_city})"
