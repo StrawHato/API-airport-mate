@@ -103,6 +103,7 @@ class FlightDetailSerializer(FlightSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
+    flight = FlightListSerializer(many=False, read_only=True)
     class Meta:
         model = Ticket
         fields = ("id", "row", "seat", "flight", "order")
@@ -132,3 +133,7 @@ class OrderSerializer(serializers.ModelSerializer):
             for ticket in tickets_data:
                 Ticket.objects.create(order=order, **ticket)
             return order
+
+
+class OrderListSerializer(OrderSerializer):
+    tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)

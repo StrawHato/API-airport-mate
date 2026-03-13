@@ -6,7 +6,8 @@ from airport.models import (
     Crew,
     Airport,
     Route,
-    Flight
+    Flight,
+    Order
 )
 
 from airport.serializers import (
@@ -16,7 +17,10 @@ from airport.serializers import (
     AirportSerializer,
     RouteSerializer,
     RouteListSerializer,
-    FlightSerializer, FlightListSerializer, FlightDetailSerializer
+    FlightSerializer,
+    FlightListSerializer,
+    FlightDetailSerializer,
+    OrderSerializer
 )
 
 
@@ -67,3 +71,8 @@ class FlightViewSet(viewsets.ModelViewSet):
         elif self.action == "retrieve":
             return FlightDetailSerializer
         return FlightSerializer
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
