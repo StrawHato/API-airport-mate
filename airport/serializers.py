@@ -80,6 +80,11 @@ class RouteListSerializer(RouteSerializer):
     )
 
 
+class RouteDetailSerializer(RouteSerializer):
+    source = AirportSerializer(many=False, read_only=True)
+    destination = AirportSerializer(many=False, read_only=True)
+
+
 class FlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flight
@@ -97,7 +102,7 @@ class FlightListSerializer(FlightSerializer):
 
 
 class FlightDetailSerializer(FlightSerializer):
-    route = RouteListSerializer(many=False, read_only=True)
+    route = RouteDetailSerializer(many=False, read_only=True)
     airplane = AirplaneSerializer(many=False, read_only=True)
     crew = CrewSerializer(many=True, read_only=True)
 
