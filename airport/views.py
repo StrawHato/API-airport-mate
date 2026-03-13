@@ -10,7 +10,7 @@ from airport.models import (
     Airport,
     Route,
     Flight,
-    Order
+    Order, Country
 )
 
 from airport.serializers import (
@@ -27,7 +27,7 @@ from airport.serializers import (
     OrderSerializer,
     OrderListSerializer,
     ImageUploadSerializer,
-    AirportListRetrieveSerializer
+    AirportListRetrieveSerializer, CountrySerializer
 )
 
 
@@ -46,6 +46,12 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
+    pagination_class = None
+
+
+class CountryViewSet(viewsets.ModelViewSet):
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
     pagination_class = None
 
 
