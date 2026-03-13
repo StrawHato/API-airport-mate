@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Count, F
 from rest_framework import viewsets, pagination, status
 from rest_framework.decorators import action
@@ -152,6 +154,26 @@ class FlightViewSet(viewsets.ModelViewSet):
         elif self.action == "retrieve":
             return FlightDetailSerializer
         return FlightSerializer
+
+    def get_queryset(self):
+        source = self.request.query_params.get("source")
+        destination = self.request.query_params.get("destination")
+        departure = self.request.query_params.get("departure")
+
+        if source:
+            return self.queryset.filter(
+                route__source__name__icontains=source
+            )
+        if destination:
+            return self.queryset.filter(
+                route__destination__name__icontains=destination
+            )
+        if departure:
+            date = datetime.strptime(departure, "%Y-%m-%d").date()
+            return self.queryset.filter(
+                departure_time__date=date
+            )
+        return self.queryset
 
 
 class OrderPagination(pagination.PageNumberPagination):
