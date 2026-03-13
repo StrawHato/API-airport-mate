@@ -50,11 +50,19 @@
     }
   },
   {
+    "model": "airport.country",
+    "pk": 1,
+    "fields": {
+      "name": "Ukraine"
+    }
+  },
+  {
     "model": "airport.airport",
     "pk": 1,
     "fields": {
       "name": "Boryspil International Airport",
-      "closest_big_city": "Kyiv"
+      "closest_big_city": "Kyiv",
+      "country": 1
     }
   },
   {
@@ -62,7 +70,8 @@
     "pk": 2,
     "fields": {
       "name": "Charles de Gaulle Airport",
-      "closest_big_city": "Paris"
+      "closest_big_city": "Paris",
+      "country": 1
     }
   },
   {
@@ -70,7 +79,8 @@
     "pk": 3,
     "fields": {
       "name": "Heathrow Airport",
-      "closest_big_city": "London"
+      "closest_big_city": "London",
+      "country": 1
     }
   },
   {
@@ -97,7 +107,10 @@
     "fields": {
       "route": 1,
       "airplane": 1,
-      "crew": [1, 2],
+      "crew": [
+        1,
+        2
+      ],
       "departure_time": "2026-04-01T08:00:00Z",
       "arrival_time": "2026-04-01T11:00:00Z"
     }
@@ -108,7 +121,9 @@
     "fields": {
       "route": 2,
       "airplane": 2,
-      "crew": [1],
+      "crew": [
+        1
+      ],
       "departure_time": "2026-04-02T12:00:00Z",
       "arrival_time": "2026-04-02T13:00:00Z"
     }
