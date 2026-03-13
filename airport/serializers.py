@@ -11,6 +11,7 @@ from airport.models import (
     Flight,
     Ticket,
     Order,
+    Country,
 )
 
 
@@ -48,6 +49,12 @@ class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
         fields = ("id", "first_name", "last_name", "full_name")
+
+
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = ("id", "name")
 
 
 class AirportSerializer(serializers.ModelSerializer):
@@ -91,8 +98,8 @@ class RouteListSerializer(RouteSerializer):
 
 
 class RouteDetailSerializer(RouteSerializer):
-    source = AirportSerializer(many=False, read_only=True)
-    destination = AirportSerializer(many=False, read_only=True)
+    source = AirportListRetrieveSerializer(many=False, read_only=True)
+    destination = AirportListRetrieveSerializer(many=False, read_only=True)
 
 
 class FlightSerializer(serializers.ModelSerializer):
