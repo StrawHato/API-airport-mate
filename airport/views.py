@@ -1,3 +1,4 @@
+from django.db.models import Count, F
 from rest_framework import viewsets, pagination, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
@@ -27,7 +28,8 @@ from airport.serializers import (
     OrderSerializer,
     OrderListSerializer,
     ImageUploadSerializer,
-    AirportListRetrieveSerializer, CountrySerializer
+    AirportListRetrieveSerializer,
+    CountrySerializer
 )
 
 
@@ -100,6 +102,11 @@ class FlightViewSet(viewsets.ModelViewSet):
         "route__destination",
         "airplane",
         "airplane__airplane_type"
+    ).annotate(
+        tickets_available=(
+                F("airplane__rows") * F("airplane__seats_in_row")
+                - Count("tickets")
+        )
     )
     serializer_class = FlightSerializer
 
