@@ -114,6 +114,20 @@ class AirportViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="country",
+                type=OpenApiTypes.STR,
+                description="Filter by airport country name (e.g. ?country=Ukraine).",
+                required=False,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        """Retrieve a list of airports with optional filtering."""
+        return super().list(request, *args, **kwargs)
+
 
 class RoutePagination(PageNumberPagination):
     page_size = 5
