@@ -68,6 +68,13 @@ class AirportViewSet(viewsets.ModelViewSet):
             return ImageUploadSerializer
         return AirportSerializer
 
+    def get_queryset(self):
+        country = self.request.query_params.get("country")
+
+        if country:
+            return Airport.objects.filter(country__name__icontains=country)
+        return self.queryset
+
     @action(
         detail=True,
         methods=["POST"],
