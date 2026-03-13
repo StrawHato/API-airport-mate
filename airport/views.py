@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, pagination
 
 from airport.models import (
     AirplaneType,
@@ -73,6 +73,12 @@ class FlightViewSet(viewsets.ModelViewSet):
         return FlightSerializer
 
 
+class OrderPagination(pagination.PageNumberPagination):
+    page_size = 1
+    page_size_query_param = "page_size"
+
+
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    pagination_class = OrderPagination
