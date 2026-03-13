@@ -69,6 +69,26 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             )
         return self.queryset
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                type=OpenApiTypes.STR,
+                description="Filter by airplane name (e.g. ?name=Boeing 737).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="airplane_type",
+                type=OpenApiTypes.STR,
+                description="Filter by airplane_type name (e.g. ?type=Airbus).",
+                required=False,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        """Retrieve a list of airplanes with optional filtering."""
+        return super().list(request, *args, **kwargs)
+
 
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
