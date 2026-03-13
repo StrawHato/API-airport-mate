@@ -188,6 +188,32 @@ class FlightViewSet(viewsets.ModelViewSet):
             )
         return self.queryset
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="source",
+                type=OpenApiTypes.STR,
+                description="Filter by source airport name (e.g. ?source=Boryspil).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="destination",
+                type=OpenApiTypes.STR,
+                description="Filter by destination airport name (e.g. ?destination=Charles de Gaulle Airport).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="departure",
+                type=OpenApiTypes.DATE,
+                description="Filter by departure time (e.g. ?departure=2026-04-01).",
+                required=False,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        """Retrieve a list of flights with optional filtering."""
+        return super().list(request, *args, **kwargs)
+
 
 class OrderPagination(pagination.PageNumberPagination):
     page_size = 1
