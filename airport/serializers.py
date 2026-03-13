@@ -61,6 +61,7 @@ class AirportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airport
         fields = ("id", "name", "closest_big_city", "country", "image")
+        read_only_fields = ("id","image",)
 
 
 class AirportListRetrieveSerializer(AirportSerializer):
