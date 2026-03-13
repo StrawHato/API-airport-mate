@@ -17,6 +17,7 @@ from airport.models import (
 from airport.serializers import (
     AirplaneTypeSerializer,
     AirplaneSerializer,
+    AirplaneListDetailSerializer,
     CrewSerializer,
     AirportSerializer,
     RouteSerializer,
@@ -29,7 +30,7 @@ from airport.serializers import (
     OrderListSerializer,
     ImageUploadSerializer,
     AirportListRetrieveSerializer,
-    CountrySerializer
+    CountrySerializer,
 )
 
 
@@ -43,6 +44,24 @@ class AirplaneViewSet(viewsets.ModelViewSet):
     queryset = Airplane.objects.select_related("airplane_type")
     serializer_class = AirplaneSerializer
     pagination_class = None
+
+    def get_serializer_class(self):
+        if self.action in ("list", "retrieve"):
+            return AirplaneListDetailSerializer
+        return AirplaneSerializer
+
+    def get_queryset(self):
+        name = self.request.query_params.get("name")
+        airplane_type = self.request.query_params.get("airplane_type")
+        if name:
+            return self.queryset.filter(
+                name__icontains=name
+            )
+        if airplane_type:
+            return self.queryset.filter(
+                airplane_type__name__icontains=airplane_type
+            )
+        return self.queryset
 
 
 class CrewViewSet(viewsets.ModelViewSet):
