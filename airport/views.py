@@ -96,16 +96,26 @@ class RouteViewSet(viewsets.ModelViewSet):
 
 
 class FlightViewSet(viewsets.ModelViewSet):
-    queryset = Flight.objects.select_related(
-        "route",
-        "route__source",
-        "route__destination",
-        "airplane",
-        "airplane__airplane_type"
-    ).annotate(
-        tickets_available=(
-                F("airplane__rows") * F("airplane__seats_in_row")
-                - Count("tickets")
+    queryset = (
+        Flight.objects
+        .select_related(
+            "route",
+            "route__source",
+            "route__destination",
+            "route__source__country",
+            "route__destination__country",
+            "airplane",
+            "airplane__airplane_type",
+        )
+        .prefetch_related(
+            "crew",
+            "tickets",
+        )
+        .annotate(
+            tickets_available=(
+                    F("airplane__rows") * F("airplane__seats_in_row")
+                    - Count("tickets")
+            )
         )
     )
     serializer_class = FlightSerializer
