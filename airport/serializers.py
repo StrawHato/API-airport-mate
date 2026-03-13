@@ -56,6 +56,10 @@ class AirportSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "closest_big_city", "country", "image")
 
 
+class AirportListRetrieveSerializer(AirportSerializer):
+    country = serializers.CharField(source="country.name", read_only=True)
+
+
 class ImageUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airport

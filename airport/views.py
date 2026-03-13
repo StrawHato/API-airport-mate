@@ -25,7 +25,9 @@ from airport.serializers import (
     FlightListSerializer,
     FlightDetailSerializer,
     OrderSerializer,
-    OrderListSerializer, ImageUploadSerializer
+    OrderListSerializer,
+    ImageUploadSerializer,
+    AirportListRetrieveSerializer
 )
 
 
@@ -48,9 +50,15 @@ class CrewViewSet(viewsets.ModelViewSet):
 
 
 class AirportViewSet(viewsets.ModelViewSet):
-    queryset = Airport.objects.all()
-    serializer_class = AirportSerializer
+    queryset = Airport.objects.prefetch_related("country")
     pagination_class = None
+
+    def get_serializer_class(self):
+        if self.action in ("list", "retrieve"):
+            return AirportListRetrieveSerializer
+        elif self.action == "upload_image":
+            return ImageUploadSerializer
+        return AirportSerializer
 
     @action(
         detail=True,
@@ -58,10 +66,10 @@ class AirportViewSet(viewsets.ModelViewSet):
         url_path="upload-image",
         permission_classes=(IsAdminUser,),
     )
-    def image_upload(self, request, pk=None):
+    def upload_image(self, request, pk=None):
         """Endpoint for uploading image to specific airport"""
         airport = self.get_object()
-        serializer = ImageUploadSerializer(airport, data=request.data)
+        serializer = self.get_serializer(airport, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
