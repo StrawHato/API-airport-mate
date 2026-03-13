@@ -17,11 +17,12 @@ from airport.serializers import (
     AirportSerializer,
     RouteSerializer,
     RouteListSerializer,
+    RouteDetailSerializer,
     FlightSerializer,
     FlightListSerializer,
     FlightDetailSerializer,
     OrderSerializer,
-    RouteDetailSerializer
+    OrderListSerializer
 )
 
 
@@ -86,8 +87,12 @@ class OrderPagination(pagination.PageNumberPagination):
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializer
     pagination_class = OrderPagination
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListSerializer
+        return OrderSerializer
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
