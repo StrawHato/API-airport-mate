@@ -118,12 +118,6 @@ class FlightListSerializer(FlightSerializer):
     )
 
 
-class FlightDetailSerializer(FlightSerializer):
-    route = RouteDetailSerializer(many=False, read_only=True)
-    airplane = AirplaneSerializer(many=False, read_only=True)
-    crew = CrewSerializer(many=True, read_only=True)
-
-
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
@@ -138,6 +132,27 @@ class TicketSerializer(serializers.ModelSerializer):
             ValidationError
         )
         return data
+
+
+class TicketRowSeatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("row", "seat")
+
+
+class FlightDetailSerializer(FlightSerializer):
+    route = RouteDetailSerializer(many=False, read_only=True)
+    airplane = AirplaneSerializer(many=False, read_only=True)
+    crew = CrewSerializer(many=True, read_only=True)
+    taken_seats = TicketRowSeatSerializer(
+        many=True,
+        read_only=True,
+        source="tickets"
+    )
+
+    class Meta:
+        model = Flight
+        fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time", "taken_seats")
 
 
 class TicketListSerializer(TicketSerializer):
