@@ -1,8 +1,11 @@
 from datetime import datetime
 
 from django.db.models import Count, F
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, pagination, status
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
@@ -41,14 +44,12 @@ class AirplaneTypeViewSet(viewsets.ModelViewSet):
     queryset = AirplaneType.objects.all()
     serializer_class = AirplaneTypeSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    pagination_class = None
 
 
 class AirplaneViewSet(viewsets.ModelViewSet):
     queryset = Airplane.objects.select_related("airplane_type")
     serializer_class = AirplaneSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    pagination_class = None
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
@@ -73,20 +74,17 @@ class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    pagination_class = None
 
 
 class CountryViewSet(viewsets.ModelViewSet):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    pagination_class = None
 
 
 class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.prefetch_related("country")
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    pagination_class = None
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
@@ -117,10 +115,17 @@ class AirportViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class RoutePagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = "page_size"
+    max_page_size = 10
+
+
 class RouteViewSet(viewsets.ModelViewSet):
     queryset = Route.objects.select_related("source", "destination")
     serializer_class = RouteSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    pagination_class = RoutePagination
 
     def get_serializer_class(self):
         if self.action == "list":
